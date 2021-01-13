@@ -17,7 +17,7 @@ public class FilmeServlet extends HttpServlet{
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Filme coringa = new Filme("Coringa", "Drama", 2019);
-		Filme matrix = new Filme("Matrix", "Ação", 1999);
+		Filme matrix = new Filme("Matrix", "AÃ§Ã£o", 1999);
 		Filme forrestGump = new Filme("Forrest Gump", "Drama", 1994);
 		
 		ArrayList<Filme> filmes = new ArrayList<Filme>();
@@ -28,16 +28,13 @@ public class FilmeServlet extends HttpServlet{
 		String genero = req.getParameter("genero");
 		
 		resp.setContentType("text/HTML");
-		PrintWriter out = resp.getWriter();
 		
-		out.println("<h2> Lista de Filmes, utilizando Servlet </h2>");
-		out.println("<ol>");
-		filmes.stream().filter(filme -> filme.getGenero().toUpperCase().equals(genero.toUpperCase())).forEach(filme -> {
-			out.println(String.format("<li> Nome: %s", filme.getNome()));
-			out.println(String.format(" Gênero: %s", filme.getGenero()));
-			out.println(String.format(" Ano: %s </li>", filme.getAno()));
-		});		
-		out.println("</ol>");
-		out.close();		
+		ArrayList<Filme> listaFiltrada = filmes.stream().filter(filme -> filme.getGenero().toUpperCase().equals(genero.toUpperCase()))
+				.collect(Collectors.toCollection(ArrayList::new));
+		
+		req.setAttribute("listaFiltrada", listaFiltrada);
+		
+		RequestDispatcher dispatcher = req.getRequestDispatcher("/lista-filmes.jsp"); 
+		dispatcher.forward(req, resp);		
 	}
 }
